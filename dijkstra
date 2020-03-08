@@ -1,0 +1,46 @@
+void dijkstra(Graph G, int vs, int prev[], int dist[])
+{
+    int i,j,k;
+    int min;
+    int tmp;
+    int flag[MAX];      // 
+
+    for (i = 0; i < G.vexnum; i++)
+    {
+        flag[i] = 0;              
+        prev[i] = 0;              
+        dist[i] = G.matrix[vs][i];
+    }
+
+    flag[vs] = 1;
+    dist[vs] = 0;
+
+    for (i = 1; i < G.vexnum; i++)
+    {
+        min = INF;
+        for (j = 0; j < G.vexnum; j++)
+        {
+            if (flag[j]==0 && dist[j]<min)
+            {
+                min = dist[j];
+                k = j;
+            }
+        }
+        flag[k] = 1;
+
+        for (j = 0; j < G.vexnum; j++)
+        {
+            tmp = (G.matrix[k][j]==INF ? INF : (min + G.matrix[k][j])); // 防止溢出
+            if (flag[j] == 0 && (tmp  < dist[j]) )
+            {
+                dist[j] = tmp;
+                prev[j] = k;
+            }
+        }
+    }
+
+
+    printf("dijkstra(%c): \n", G.vexs[vs]);
+    for (i = 0; i < G.vexnum; i++)
+        printf("  shortest(%c, %c)=%d\n", G.vexs[vs], G.vexs[i], dist[i]);
+}
