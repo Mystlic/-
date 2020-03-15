@@ -1,0 +1,17 @@
+int erfen(int x){
+    int low,mid,high,j=0;
+    low=1;
+    high=n;
+    while (low<high) {
+        mid=(low+high)/2;
+        if(T[mid]<x)
+            low=mid+1;
+        else if(T[mid]>x)
+            high=mid-1;
+        else if(T[mid]==x){
+            j=mid;
+            break;
+        }
+    }
+    printf("%d\n",j);
+}
