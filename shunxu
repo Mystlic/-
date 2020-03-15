@@ -1,0 +1,10 @@
+int shunxu(int x){
+    int j=0,i;
+    for(i=1;i<=n;i++){
+        if(T[i]==x){
+            j=i;
+            break;
+        }
+    }
+    printf("%d\n",j);
+}
