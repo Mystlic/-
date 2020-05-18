@@ -1,0 +1,128 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+struct node
+{
+    int key;
+    struct node *l;
+    struct node *r;
+};
+typedef struct node *pnode;
+int mark[100];
+struct node  huffman[100];
+void PrintNode(const pnode node)
+{
+    printf("key = %d \n", node->key);
+}
+void PreOrder(pnode T)
+{
+    if(T)
+    {
+        PrintNode(T);
+        PreOrder(T->l);
+        PreOrder(T->r);
+    }
+}
+void Select(int *mark, struct node *huffman, int size, int *choose)
+{
+
+    int i;
+    for(i = 0;  i< size;  i++)
+    {
+        if(mark[i])
+        {
+            choose[0] = i;
+            i++;
+            break;
+        }
+    }
+    choose[1] = choose[0];
+    for(; i < size; i++)
+    {
+        if(mark[i])
+        {
+            if(huffman[choose[0]].key >= huffman[i].key)
+            {
+                choose[1] = choose[0];
+                choose[0] = i;
+            }
+            else if(huffman[choose[1]].key > huffman[i].key)
+            {
+                choose[1] = i;
+            }
+        }
+
+    }
+}
+void Choose(int *mark, struct node *huffman, int size, int *choose)
+{
+    int i;
+    int minkey = 0;
+    int tkey = 0;
+    int temp = 0;
+    for(i = 0;  i< size;  i++)
+    {
+        if(mark[i])
+        {
+            minkey = i;
+            i++;
+            break;
+        }
+    }
+    tkey = minkey;
+    for(;  i< size;  i++)
+    {
+        if(mark[i])
+        {
+            if(huffman[i].key < huffman[minkey].key)
+            {
+                tkey = minkey;
+                minkey = i;
+            }
+            if(tkey == minkey)
+                tkey = i;
+            if(huffman[tkey].key > huffman[i].key && i != minkey)
+            {
+                tkey = i;
+            }
+        }
+    }
+    choose[0] = minkey;
+    choose[1] = tkey;
+}
+pnode HuffmanTree(int *mark, struct node *huffman, int size)
+{
+    int choose[2];
+    int i;
+    pnode mynode;
+    for(i = 0;  i < size-1;  i++)
+    {
+        Select(mark, huffman, size, choose);
+        mynode = (pnode)malloc(sizeof(struct node));
+        mynode->key = huffman[choose[0]].key+huffman[choose[1]].key;//更新key值
+        mynode->l = (pnode)malloc(sizeof(struct node));
+        mynode->l->key = huffman[choose[0]].key;
+        mynode->l->l = huffman[choose[0]].l;
+        mynode->l->r = huffman[choose[0]].r;
+        mynode->r = &huffman[choose[1]];
+        huffman[choose[0]] = *mynode;
+        mark[choose[1]] = 0;
+        free(mynode);
+    }
+    return &huffman[choose[0]];
+}
+int main(void)
+{
+    int key[8] = {5,29,7,8,14,23,3,11};
+    int i;
+    pnode huffmantree;
+    memset(mark, -1, sizeof(mark));
+    memset(huffman, 0, sizeof(huffman));
+    for(i = 0;  i < 8;  i++)
+    {
+        huffman[i].key = key[i];
+    }
+    huffmantree = HuffmanTree(mark, huffman, 8);
+    PreOrder(huffmantree);
+    return 0;
+}
